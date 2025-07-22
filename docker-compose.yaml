@@ -1,0 +1,106 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: gosconnect
+      POSTGRES_PASSWORD: gosconnect
+      POSTGRES_DB: gosconnect
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gosconnect"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    command: uvicorn gosconnect.asgi:application --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://gosconnect:gosconnect@db:5433/gosconnect
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  # Celery worker for request_etk_statement queue
+  celery_request_etk_statement:
+    build: .
+    command: celery -A gosconnect worker -l info -Q request_etk_statement
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  # Celery worker for send_to_telegram queue
+  celery_send_to_telegram:
+    build: .
+    command: celery -A gosconnect worker -l info -Q send_to_telegram
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  # Celery worker for default queue
+  celery_default:
+    build: .
+    command: celery -A gosconnect worker -l info -Q default
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+  # Celery beat scheduler
+  celery_beat:
+    build: .
+    command: celery -A gosconnect beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+volumes:
+  pg_data:
