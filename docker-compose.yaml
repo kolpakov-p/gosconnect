@@ -25,6 +25,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://gosconnect:gosconnect@db/gosconnect
 
   redis:
     image: redis:7-alpine
@@ -45,6 +47,7 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_URL=postgres://gosconnect:gosconnect@db/gosconnect
 
   # Celery worker for send_to_telegram queue
   celery_send_to_telegram:
@@ -60,6 +63,7 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_URL=postgres://gosconnect:gosconnect@db/gosconnect
 
   # Celery worker for default queue
   celery_default:
@@ -75,6 +79,7 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_URL=postgres://gosconnect:gosconnect@db/gosconnect
 
   # Celery beat scheduler
   celery_beat:
@@ -90,6 +95,7 @@ services:
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_URL=postgres://gosconnect:gosconnect@db/gosconnect
 
 volumes:
   pg_data:

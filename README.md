@@ -37,6 +37,7 @@ docker compose exec web python manage.py migrate
 4. **Доступные эндпоинты:**
 
 - `POST /etk_retriever/retrieve` (ставит задачу на получение выписки)
+- `GET /etk_retriever/health/db` (проверить соединение до базы данных)
 
 ## Переменные окружения
 - `TELEGRAM_BOT_TOKEN` — токен Telegram-бота

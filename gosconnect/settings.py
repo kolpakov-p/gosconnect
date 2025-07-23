@@ -82,14 +82,10 @@ WSGI_APPLICATION = "gosconnect.wsgi.application"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "gosconnect",
-        "USER": "gosconnect",
-        "PASSWORD": "gosconnect",
-        "HOST": "db",
-        "PORT": "5432",
-    }
+    "default": env.db(
+        "DATABASE_URL",
+        default="postgres://gosconnect:gosconnect@localhost:5433/gosconnect",
+    )
 }
 
 
