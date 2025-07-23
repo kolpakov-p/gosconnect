@@ -39,10 +39,15 @@ class EtkRetriever:
 
         # Настройка Selenium (headless Chrome).
         chrome_options = Options()
+        # Для запуска в контейнере.
         # chrome_options.add_argument('--headless')
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
-        driver = webdriver.Chrome(options=chrome_options)
+        driver = webdriver.Chrome(
+            options=chrome_options,
+            # Для запуска в контейнере.
+            # service=Service("/usr/bin/chromedriver")
+        )
 
         # TODO: Обрабатывать ошибки и помечать запрос как неудавшийся, отправлять уведомление в мониторинг.
         #  Либо отправлять на повторное исполнение (в Celery).
