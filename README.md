@@ -39,6 +39,11 @@ docker compose exec web python manage.py migrate
 - `POST /etk_retriever/retrieve` (ставит задачу на получение выписки)
 - `GET /etk_retriever/health/db` (проверить соединение до базы данных)
 
+**Воркер, использующий Chromium, лучше запускать нативно, он стартует браузер в GUI-режиме, так веселее:**
+```bash
+celery -A gosconnect worker -Q request_etk_statement -l info
+```
+
 ## Переменные окружения
 - `TELEGRAM_BOT_TOKEN` — токен Telegram-бота
 - `TELEGRAM_CHAT_ID` — chat_id для отправки капчи и SMS-кодов
