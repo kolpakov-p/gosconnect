@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
     gcc \
     chromium \
     chromium-driver \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Переменные окружения для headless Chrome
@@ -19,11 +20,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Копирование кода приложения
 COPY . .
-
-# Создание пользователя для безопасности
-RUN useradd --create-home --shell /bin/bash app
-RUN chown -R app:app /app
-USER app
 
 EXPOSE 8000
 

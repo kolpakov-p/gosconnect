@@ -87,8 +87,8 @@ DATABASES = {
         "NAME": "gosconnect",
         "USER": "gosconnect",
         "PASSWORD": "gosconnect",
-        "HOST": "127.0.0.1",
-        "PORT": "5433",
+        "HOST": "db",
+        "PORT": "5432",
     }
 }
 

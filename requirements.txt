@@ -2,6 +2,7 @@ black~=25.1.0
 django~=5.2.4
 uvicorn[standard]~=0.27.0
 psycopg~=3.2.9
+psycopg[binary]~=3.2.9
 selenium~=4.21.0
 celery~=5.3.6
 requests~=2.32.4

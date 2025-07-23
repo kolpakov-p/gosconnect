@@ -26,12 +26,12 @@ TELEGRAM_CHAT_ID=ваш_chat_id
 
 2. **Запустите сервисы:**
 ```bash
-docker-compose up
+docker compose up
 ```
 
 3. **Запустите миграции:**
 ```bash
-docker-compose exec web python manage.py migrate
+docker compose exec web python manage.py migrate
 ```
 
 4. **Доступные эндпоинты:**
